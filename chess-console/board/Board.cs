@@ -2,20 +2,22 @@
 {
     internal class Board
     {
-        public int Lines { get; set; }
+        public int Rows { get; set; }
         public int Columns { get; set; }
         private Piece[,] Pieces;
 
-        public Board(int lines, int columns)
+        public Board(int rows, int columns)
         {
-            Lines = lines;
+            Rows = rows;
             Columns = columns;
-            Pieces = new Piece[lines, columns];
+            Pieces = new Piece[rows, columns];
         }
 
-        public Piece Piece(int line, int column)
+        public Piece Piece(int row, int column)
         {
-            return Pieces[line, column];
+            return Pieces[row, column];
         }
+
+
     }
 }
