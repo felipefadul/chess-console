@@ -1,5 +1,6 @@
 ﻿using board;
 using board.chess;
+using exceptions;
 
 namespace chess_console
 {
@@ -7,13 +8,21 @@ namespace chess_console
     {
         static void Main(string[] args)
         {
-            Board board = new Board(8, 8);
+            try
+            {
+                Board board = new(8, 8);
 
-            board.PlaceAPiece(new Rook(board, Color.Black), new Position(0, 0));
-            board.PlaceAPiece(new Rook(board, Color.Black), new Position(1, 3));
-            board.PlaceAPiece(new King(board, Color.Black), new Position(2, 4));
+                board.PlaceAPiece(new Rook(board, Color.Black), new Position(0, 0));
+                board.PlaceAPiece(new Rook(board, Color.Black), new Position(1, 3));
+                board.PlaceAPiece(new King(board, Color.Black), new Position(0, 2));
 
-            Screen.PrintBoard(board);
+                Screen.PrintBoard(board);
+            }
+            catch (BoardException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
             Console.ReadLine();
         }
     }
