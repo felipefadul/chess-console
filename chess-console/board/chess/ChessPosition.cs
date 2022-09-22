@@ -9,7 +9,7 @@
 
         public ChessPosition(char column, int row)
         {
-            Column = column;
+            Column = column.ToString().ToUpper()[0];
             Row = row;
         }
 
@@ -20,7 +20,7 @@
 
         public Position ToPosition()
         {
-            return new Position(MAXIMUM_NUMBER_OF_ROWS_POSITIONS - Row, Column - 'a');
+            return new Position(MAXIMUM_NUMBER_OF_ROWS_POSITIONS - Row, Column - 'A');
         }
     }
 }
