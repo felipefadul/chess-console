@@ -6,23 +6,23 @@ namespace board
     {
         public int Rows { get; set; }
         public int Columns { get; set; }
-        private Piece[,] Pieces;
+        private Piece[,] _pieces;
 
         public Board(int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
-            Pieces = new Piece[rows, columns];
+            _pieces = new Piece[rows, columns];
         }
 
         public Piece Piece(int row, int column)
         {
-            return Pieces[row, column];
+            return _pieces[row, column];
         }
 
         public Piece Piece(Position position)
         {
-            return Pieces[position.Row, position.Column];
+            return _pieces[position.Row, position.Column];
         }
 
         public bool IsThereAPiece(Position position)
@@ -37,8 +37,20 @@ namespace board
             {
                 throw new BoardException($"There is already a piece in the position ({position})!");
             }
-            Pieces[position.Row, position.Column] = piece;
+            _pieces[position.Row, position.Column] = piece;
             piece.Position = position;
+        }
+
+        public Piece? RemoveAPiece(Position position)
+        {
+            if (Piece(position) == null)
+            {
+                return null;
+            }
+            Piece removedPiece = Piece(position);
+            removedPiece.Position = null;
+            _pieces[position.Row, position.Column] = null;
+            return removedPiece;
         }
 
         public bool IsPositionValid(Position position)

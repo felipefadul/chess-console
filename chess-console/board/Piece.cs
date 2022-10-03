@@ -14,5 +14,10 @@
             Board = board;
             NumberOfMovements = 0;
         }
+
+        public void IncreaseNumberOfMovements()
+        {
+            NumberOfMovements++;
+        }
     }
 }
