@@ -12,20 +12,32 @@ namespace chess_console
                 PrintRowNumbers(board.Rows, i);
                 for (int j = 0; j < board.Columns; j++)
                 {
-                    if (board.Piece(i, j) == null)
-                    {
-                        Console.Write("- ");
-                    }
-                    else
-                    {
-                        PrintPiece(board.Piece(i, j));
-                        Console.Write(" ");
-                    }
+                    PrintPieceOrEmptySpace(board.Piece(i, j));
                 }
                 Console.WriteLine();
             }
             Console.Write("  ");
             PrintColumnLetters(board.Columns);
+        }
+
+        public static void PrintBoard(Board board, bool[,] possibleMovements)
+        {
+            ConsoleColor originalBackground = Console.BackgroundColor;
+
+            for (int i = 0; i < board.Rows; i++)
+            {
+                PrintRowNumbers(board.Rows, i);
+                for (int j = 0; j < board.Columns; j++)
+                {
+                    PrintBackgroundColor(possibleMovements[i, j], originalBackground);
+                    PrintPieceOrEmptySpace(board.Piece(i, j));
+                    Console.BackgroundColor = originalBackground;
+                }
+                Console.WriteLine();
+            }
+            Console.Write("  ");
+            PrintColumnLetters(board.Columns);
+            Console.BackgroundColor = originalBackground;
         }
 
         public static ChessPosition ReadChessPosition()
@@ -50,6 +62,19 @@ namespace chess_console
             }
         }
 
+        private static void PrintPieceOrEmptySpace(Piece piece)
+        {
+            if (piece == null)
+            {
+                PrintEmptyPieceSpace();
+            }
+            else
+            {
+                PrintPiece(piece);
+                Console.Write(" ");
+            }
+        }
+
         private static void PrintPiece(Piece piece)
         {
             if (piece.Color == Color.White)
@@ -63,6 +88,16 @@ namespace chess_console
                 Console.Write(piece);
                 Console.ForegroundColor = auxiliaryConsoleColor;
             }
+        }
+
+        private static void PrintEmptyPieceSpace()
+        {
+            Console.Write("- ");
+        }
+
+        private static void PrintBackgroundColor(bool isPossibleMovement, ConsoleColor originalBackground)
+        {
+            Console.BackgroundColor = isPossibleMovement ? ConsoleColor.DarkGray : originalBackground;
         }
     }
 }

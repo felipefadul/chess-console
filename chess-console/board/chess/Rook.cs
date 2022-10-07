@@ -10,5 +10,70 @@
         {
             return "R";
         }
+
+        public override bool[,] PossibleMovements()
+        {
+            bool[,] matrixOfPossibilities = new bool[Board.Rows, Board.Columns];
+
+            Position positionToCheck = new(0, 0);
+
+            // Forward direction
+            positionToCheck.DefineValues(Position.Row - 1, Position.Column);
+            while (PossiblePosition(positionToCheck))
+            {
+                matrixOfPossibilities[positionToCheck.Row, positionToCheck.Column] = true;
+                if (!CanMove(positionToCheck))
+                {
+                    break;
+                }
+                positionToCheck.Row--;
+            }
+
+            // Backward direction
+            positionToCheck.DefineValues(Position.Row + 1, Position.Column);
+            while (PossiblePosition(positionToCheck))
+            {
+                matrixOfPossibilities[positionToCheck.Row, positionToCheck.Column] = true;
+                if (!CanMove(positionToCheck))
+                {
+                    break;
+                }
+                positionToCheck.Row++;
+            }
+
+            // Right direction
+            positionToCheck.DefineValues(Position.Row, Position.Column + 1);
+            while (PossiblePosition(positionToCheck))
+            {
+                matrixOfPossibilities[positionToCheck.Row, positionToCheck.Column] = true;
+                if (!CanMove(positionToCheck))
+                {
+                    break;
+                }
+                positionToCheck.Column++;
+            }
+
+            // Left direction
+            positionToCheck.DefineValues(Position.Row, Position.Column - 1);
+            while (PossiblePosition(positionToCheck))
+            {
+                matrixOfPossibilities[positionToCheck.Row, positionToCheck.Column] = true;
+                if (!CanMove(positionToCheck))
+                {
+                    break;
+                }
+                positionToCheck.Column--;
+            }
+
+            return matrixOfPossibilities;
+        }
+
+        private bool CanMove(Position position)
+        {
+            Piece piece = Board.Piece(position);
+            return piece == null || piece.Color != Color;
+        }
+
+        private bool PossiblePosition(Position position) => Board.IsPositionValid(position) && CanMove(position);
     }
 }
