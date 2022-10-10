@@ -22,7 +22,7 @@
             while (PossiblePosition(positionToCheck))
             {
                 matrixOfPossibilities[positionToCheck.Row, positionToCheck.Column] = true;
-                if (!CanMove(positionToCheck))
+                if (Board.Piece(positionToCheck) != null && Board.Piece(positionToCheck).Color != Color)
                 {
                     break;
                 }
@@ -34,7 +34,7 @@
             while (PossiblePosition(positionToCheck))
             {
                 matrixOfPossibilities[positionToCheck.Row, positionToCheck.Column] = true;
-                if (!CanMove(positionToCheck))
+                if (Board.Piece(positionToCheck) != null && Board.Piece(positionToCheck).Color != Color)
                 {
                     break;
                 }
@@ -46,7 +46,7 @@
             while (PossiblePosition(positionToCheck))
             {
                 matrixOfPossibilities[positionToCheck.Row, positionToCheck.Column] = true;
-                if (!CanMove(positionToCheck))
+                if (Board.Piece(positionToCheck) != null && Board.Piece(positionToCheck).Color != Color)
                 {
                     break;
                 }
@@ -58,7 +58,7 @@
             while (PossiblePosition(positionToCheck))
             {
                 matrixOfPossibilities[positionToCheck.Row, positionToCheck.Column] = true;
-                if (!CanMove(positionToCheck))
+                if (Board.Piece(positionToCheck) != null && Board.Piece(positionToCheck).Color != Color)
                 {
                     break;
                 }
