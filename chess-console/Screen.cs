@@ -5,6 +5,16 @@ namespace chess_console
 {
     internal class Screen
     {
+        public static void PrintMatch(ChessMatch match)
+        {
+            PrintBoard(match.Board);
+            Console.WriteLine(Environment.NewLine);
+            PrintCapturedPieces(match);
+            Console.WriteLine(Environment.NewLine);
+            Console.WriteLine("Turn: " + match.Turn);
+            Console.WriteLine("Waiting player: " + match.CurrentPlayer);
+        }
+
         public static void PrintBoard(Board board)
         {
             for (int i = 0; i < board.Rows; i++)
@@ -98,6 +108,29 @@ namespace chess_console
         private static void PrintBackgroundColor(bool isPossibleMovement, ConsoleColor originalBackground)
         {
             Console.BackgroundColor = isPossibleMovement ? ConsoleColor.DarkGray : originalBackground;
+        }
+
+        private static void PrintCapturedPieces(ChessMatch match)
+        {
+            Console.WriteLine("Captured pieces:");
+            Console.Write("White: ");
+            PrintSet(match.GetCapturedPiecesByColor(Color.White));
+            Console.WriteLine();
+            Console.Write("Black: ");
+            ConsoleColor auxiliaryConsoleColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            PrintSet(match.GetCapturedPiecesByColor(Color.Black));
+            Console.ForegroundColor = auxiliaryConsoleColor;
+        }
+
+        private static void PrintSet(HashSet<Piece> set)
+        {
+            Console.Write("[");
+            foreach (Piece piece in set)
+            {
+                Console.Write(piece + " ");
+            }
+            Console.Write("]");
         }
     }
 }

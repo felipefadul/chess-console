@@ -16,10 +16,7 @@ namespace chess_console
                     try
                     {
                         Console.Clear();
-                        Screen.PrintBoard(match.Board);
-                        Console.WriteLine(Environment.NewLine);
-                        Console.WriteLine("Turn: " + match.Turn);
-                        Console.WriteLine("Waiting player: " + match.CurrentPlayer);
+                        Screen.PrintMatch(match);
 
                         Console.WriteLine();
                         Console.Write("Origin: ");
