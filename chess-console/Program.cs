@@ -13,25 +13,37 @@ namespace chess_console
                 ChessMatch match = new();
                 while (!match.IsFinished)
                 {
-                    Console.Clear();
-                    Screen.PrintBoard(match.Board);
+                    try
+                    {
+                        Console.Clear();
+                        Screen.PrintBoard(match.Board);
+                        Console.WriteLine(Environment.NewLine);
+                        Console.WriteLine("Turn: " + match.Turn);
+                        Console.WriteLine("Waiting player: " + match.CurrentPlayer);
 
-                    Console.WriteLine(Environment.NewLine);
-                    Console.Write("Origin: ");
-                    Position origin = Screen.ReadChessPosition().ToPosition();
+                        Console.WriteLine();
+                        Console.Write("Origin: ");
+                        Position origin = Screen.ReadChessPosition().ToPosition();
+                        match.ValidateOriginPosition(origin);
 
-                    bool[,] possibleMovements = match.Board.Piece(origin).PossibleMovements();
+                        bool[,] possibleMovements = match.Board.Piece(origin).PossibleMovements();
 
-                    Console.Clear();
-                    Screen.PrintBoard(match.Board, possibleMovements);
+                        Console.Clear();
+                        Screen.PrintBoard(match.Board, possibleMovements);
 
-                    Console.WriteLine(Environment.NewLine);
-                    Console.Write("Destination: ");
-                    Position destination = Screen.ReadChessPosition().ToPosition();
+                        Console.WriteLine(Environment.NewLine);
+                        Console.Write("Destination: ");
+                        Position destination = Screen.ReadChessPosition().ToPosition();
+                        match.ValidateDestinationPosition(origin, destination);
 
-                    match.ExecuteMovement(origin, destination);
+                        match.MakeAMove(origin, destination);
+                    }
+                    catch (BoardException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.ReadLine();
+                    }
                 }
-                
                 Screen.PrintBoard(match.Board);
             }
             catch (BoardException e)

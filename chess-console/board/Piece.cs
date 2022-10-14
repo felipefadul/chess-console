@@ -20,6 +20,27 @@
             NumberOfMovements++;
         }
 
+        public bool HasPossibleMovements()
+        {
+            bool[,] matrixOfPossibilities = PossibleMovements();
+            for (int i = 0; i < Board.Rows; i++)
+            {
+                for (int j = 0; j < Board.Columns; j++)
+                {
+                    if (matrixOfPossibilities[i, j])
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool CanMoveToPosition(Position position)
+        {
+            return PossibleMovements()[position.Row, position.Column];
+        }
+
         public abstract bool[,] PossibleMovements();
     }
 }
