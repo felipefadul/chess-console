@@ -8,15 +8,17 @@ namespace board.chess
         public int Turn { get; private set; }
         public Color CurrentPlayer { get; private set; }
         public bool IsFinished { get; private set; }
+        public bool IsInCheck { get; private set; }
         private HashSet<Piece> _piecesOnTheBoard;
         private HashSet<Piece> _capturedPieces;
-
+        
         public ChessMatch()
         {
             Board = new Board(8, 8);
             Turn = 1;
             CurrentPlayer = Color.White;
             IsFinished = false;
+            IsInCheck = false;
             _piecesOnTheBoard = new HashSet<Piece>();
             _capturedPieces = new HashSet<Piece>();
             PlacePieces();
@@ -24,7 +26,16 @@ namespace board.chess
 
         public void MakeAMove(Position origin, Position destination)
         {
-            ExecuteMovement(origin, destination);
+            Piece? capturedPiece = ExecuteMovement(origin, destination);
+
+            if (ValidateIfKingIsInCheck(CurrentPlayer))
+            {
+                UndoMovement(origin, destination, capturedPiece);
+                throw new BoardException("You can't put yourself in check!");
+            }
+
+            IsInCheck = ValidateIfKingIsInCheck(GetOpposingPlayer(CurrentPlayer));
+
             Turn++;
             SwitchPlayer();
         }
@@ -35,7 +46,7 @@ namespace board.chess
             {
                 throw new BoardException("There is no piece in the chosen origin position!");
             }
-            
+
             if (CurrentPlayer != Board.Piece(origin).Color)
             {
                 throw new BoardException("The origin piece chosen is not yours!");
@@ -71,14 +82,37 @@ namespace board.chess
             return _piecesOnTheBoard.Where(piece => piece.Color == color && !_capturedPieces.Contains(piece)).ToHashSet();
         }
 
-        private void ExecuteMovement(Position origin, Position destination)
+        private bool ValidateIfKingIsInCheck(Color color)
+        {
+            Piece? king = GetKing(color);
+
+            if (king == null || king.Position == null)
+            {
+                throw new BoardException($"There is no king of the color {color} on the board!");
+            }
+
+            Color opponentColor = GetOpposingPlayer(color);
+
+            foreach (Piece opponentPiece in GetPiecesOnTheBoardByColor(opponentColor))
+            {
+                bool[,] matrixOfPossibilities = opponentPiece.PossibleMovements();
+                if (matrixOfPossibilities[king.Position.Row, king.Position.Column])
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private Piece? ExecuteMovement(Position origin, Position destination)
         {
             Piece? piece = Board.RemoveAPiece(origin);
             if (piece == null)
             {
-                return;
+                return null;
             }
-            
+
             piece.IncreaseNumberOfMovements();
             Piece? capturedPiece = Board.RemoveAPiece(destination);
             Board.PlaceAPiece(piece, destination);
@@ -86,11 +120,42 @@ namespace board.chess
             {
                 _capturedPieces.Add(capturedPiece);
             }
+
+            return capturedPiece;
+        }
+
+        private void UndoMovement(Position origin, Position destination, Piece? capturedPiece)
+        {
+            Piece? piece = Board.RemoveAPiece(destination);
+            if (piece == null)
+            {
+                return;
+            }
+
+            piece.DecreaseNumberOfMovements();
+
+            if (capturedPiece != null)
+            {
+                Board.PlaceAPiece(capturedPiece, destination);
+                _capturedPieces.Remove(capturedPiece);
+            }
+
+            Board.PlaceAPiece(piece, origin);
         }
 
         private void SwitchPlayer()
         {
             CurrentPlayer = CurrentPlayer == Color.White ? Color.Black : Color.White;
+        }
+
+        private Color GetOpposingPlayer(Color color)
+        {
+            return color == Color.White ? Color.Black : Color.White;
+        }
+
+        private Piece? GetKing(Color color)
+        {
+            return GetPiecesOnTheBoardByColor(color).FirstOrDefault(piece => piece is King);
         }
 
         private void PlacePieces()

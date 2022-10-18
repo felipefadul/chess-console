@@ -13,6 +13,10 @@ namespace chess_console
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine("Turn: " + match.Turn);
             Console.WriteLine("Waiting player: " + match.CurrentPlayer);
+            if (match.IsInCheck)
+            {
+                Console.WriteLine("CHECK!");
+            }
         }
 
         public static void PrintBoard(Board board)
