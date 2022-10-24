@@ -34,10 +34,19 @@ namespace board.chess
                 throw new BoardException("You can't put yourself in check!");
             }
 
-            IsInCheck = ValidateIfKingIsInCheck(GetOpposingPlayer(CurrentPlayer));
+            Color opponentPlayer = GetOpposingPlayer(CurrentPlayer);
 
-            Turn++;
-            SwitchPlayer();
+            IsInCheck = ValidateIfKingIsInCheck(opponentPlayer);
+
+            if (ValidateIfIsCheckmate(opponentPlayer))
+            {
+                IsFinished = true;
+            }
+            else
+            {
+                Turn++;
+                SwitchPlayer();
+            }
         }
 
         public void ValidateOriginPosition(Position origin)
@@ -105,6 +114,38 @@ namespace board.chess
             return false;
         }
 
+        private bool ValidateIfIsCheckmate(Color color)
+        {
+            if (!ValidateIfKingIsInCheck(color))
+            {
+                return false;
+            }
+            
+            foreach (Piece piece in GetPiecesOnTheBoardByColor(color))
+            {
+                bool[,] matrixOfPossibilities = piece.PossibleMovements();
+                for (int i = 0; i < Board.Rows; i++)
+                {
+                    for (int j = 0; j < Board.Columns; j++)
+                    {
+                        if (matrixOfPossibilities[i, j])
+                        {
+                            Position origin = piece.Position;
+                            Position destination = new(i, j);
+                            Piece? capturedPiece = ExecuteMovement(origin, destination);
+                            bool isInCheck = ValidateIfKingIsInCheck(color);
+                            UndoMovement(origin, destination, capturedPiece);
+                            if (!isInCheck)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
         private Piece? ExecuteMovement(Position origin, Position destination)
         {
             Piece? piece = Board.RemoveAPiece(origin);
@@ -161,18 +202,11 @@ namespace board.chess
         private void PlacePieces()
         {
             PlaceNewPiece('c', 1, new Rook(Board, Color.White));
-            PlaceNewPiece('c', 2, new Rook(Board, Color.White));
             PlaceNewPiece('d', 1, new King(Board, Color.White));
-            PlaceNewPiece('d', 2, new Rook(Board, Color.White));
-            PlaceNewPiece('e', 1, new Rook(Board, Color.White));
-            PlaceNewPiece('e', 2, new Rook(Board, Color.White));
+            PlaceNewPiece('h', 7, new Rook(Board, Color.White));
 
-            PlaceNewPiece('c', 7, new Rook(Board, Color.Black));
-            PlaceNewPiece('c', 8, new Rook(Board, Color.Black));
-            PlaceNewPiece('d', 7, new Rook(Board, Color.Black));
-            PlaceNewPiece('d', 8, new King(Board, Color.Black));
-            PlaceNewPiece('e', 7, new Rook(Board, Color.Black));
-            PlaceNewPiece('e', 8, new Rook(Board, Color.Black));
+            PlaceNewPiece('a', 8, new King(Board, Color.Black));
+            PlaceNewPiece('b', 8, new Rook(Board, Color.Black));
         }
     }
 }
