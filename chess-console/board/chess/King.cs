@@ -76,12 +76,12 @@
             return matrixOfPossibilities;
         }
 
-        private bool CanMove(Position position)
+        private bool CanMoveToPosition(Position position)
         {
             Piece piece = Board.Piece(position);
             return piece == null || piece.Color != Color;
         }
 
-        private bool PossiblePosition(Position position) => Board.IsPositionValid(position) && CanMove(position);
+        private bool PossiblePosition(Position position) => Board.IsPositionValid(position) && CanMoveToPosition(position);
     }
 }

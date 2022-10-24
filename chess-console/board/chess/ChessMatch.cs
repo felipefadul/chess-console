@@ -69,7 +69,7 @@ namespace board.chess
 
         public void ValidateDestinationPosition(Position origin, Position destination)
         {
-            if (!Board.Piece(origin).CanMoveToPosition(destination))
+            if (!Board.Piece(origin).ValidatePossibleMovementToPosition(destination))
             {
                 throw new BoardException("Invalid destination position!");
             }
