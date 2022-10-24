@@ -43,7 +43,7 @@
 
         public bool ValidatePossibleMovementToPosition(Position position)
         {
-            return PossibleMovements()[position.Row, position.Column];
+            return Board.IsPositionValid(position) && PossibleMovements()[position.Row, position.Column];
         }
 
         public abstract bool[,] PossibleMovements();
